@@ -34,5 +34,14 @@ app.get("/info", (request, response) => {
     <p>${new Date()}</p>`)
 })
 
+app.get("/api/persons/:id", (request, response) => {
+    const id = Number(request.params.id)
+    const note = notes.find(item => item.id === id)
+    if (note){
+        return response.send(note)
+    }
+    return response.status(404).end()
+})
+
 const PORT = 3001
 app.listen(PORT)
