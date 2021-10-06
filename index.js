@@ -3,7 +3,7 @@ app = express()
 
 app.use(express.json())
 
-let notes = [
+let persons = [
     { 
       id: 1,
       name: "Arto Hellas", 
@@ -27,36 +27,46 @@ let notes = [
 ]
 
 app.get("/api/persons", (request, response) => {
-    response.send(notes)
+    response.send(persons)
 })
 
 app.get("/info", (request, response) => {
-    response.send(`<p>Phonebook has info for ${notes.length} people</p>
+    response.send(`<p>Phonebook has info for ${persons.length} people</p>
     <p>${new Date()}</p>`)
 })
 
 app.get("/api/persons/:id", (request, response) => {
     const id = Number(request.params.id)
-    const note = notes.find(item => item.id === id)
-    if (note){
-        return response.send(note)
+    const person = persons.find(item => item.id === id)
+    if (person){
+        return response.send(person)
     }
     return response.status(404).end()
 })
 
 app.delete("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id)
-  notes = notes.filter(item => item.id !== id)
+  persons = persons.filter(item => item.id !== id)
   response.status(200).end()
 })
 
 app.post("/api/persons", (request, response) => {
-  const item = request.body
-  notes = notes.concat({
+  const person = request.body
+  if (!('name' in person ) || !('number' in person)){
+    return response.status(404).send({
+      error : "Please make sure that both the name and numbers are entered."
+    })
+  }
+  if (persons.find(item => item.name.toLowerCase().trim() === person.name.toLowerCase().trim())){
+    return response.status(403).send({
+      error:"Name already exists"
+    })
+  }
+  persons = persons.concat({
     id : Math.floor(Math.random() * 1000000),
-    ...item
+    ...person
   })
-  response.send(notes)
+  response.send(persons)
 })
 
 const PORT = 3001
