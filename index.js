@@ -80,5 +80,7 @@ app.post("/api/persons", (request, response) => {
   response.send(persons)
 })
 
-const PORT = 3001
-app.listen(PORT)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Application started in port ${PORT}`)
+})
