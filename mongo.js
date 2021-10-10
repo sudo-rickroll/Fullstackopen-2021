@@ -22,14 +22,16 @@ if (process.argv.length === 5){
         name: username,
         number: usernumber
     })
-    user.save().then(result => console.log(`added ${result.name} number ${result.number} to phonebook`))
-    mongoose.connection.close()
+    user.save().then(result => {
+        console.log(`added ${result.name} number ${result.number} to phonebook`)
+        //mongoose.connection.close()
+    })    
 }
 
 else if (process.argv.length === 3){
     User.find({}).then(result => {
         console.log("phonebook:")
         result.forEach(user => console.log(`${user.name} ${user.number}`))
-        mongoose.connection.close()
+        //mongoose.connection.close()
     })
 }
