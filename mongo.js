@@ -6,7 +6,11 @@ if (process.argv.length < 3){
 }
 
 const password = process.argv[2]
-const url = `mongodb+srv://ServiceAccount:${password}@fullstackopen-2021.fzfch.mongodb.net/Phonebook?retryWrites=true&w=majority`
+const useraccount = "ServiceAccount"
+const cluster = "fullstackopen-2021"
+const database = "Phonebook"
+
+const url = `mongodb+srv://${useraccount}:${password}@${cluster}.fzfch.mongodb.net/${database}?retryWrites=true&w=majority`
 
 mongoose.connect(url)
 
