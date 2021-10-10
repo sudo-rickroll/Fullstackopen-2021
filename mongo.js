@@ -8,6 +8,8 @@ if (process.argv.length < 3){
 const password = process.argv[2]
 const url = `mongodb+srv://ServiceAccount:${password}@fullstackopen-2021.fzfch.mongodb.net/Phonebook?retryWrites=true&w=majority`
 
+mongoose.connect(url)
+
 const phonebookSchema = new mongoose.Schema({
     name : String,
     number : String
@@ -24,7 +26,7 @@ if (process.argv.length === 5){
     })
     user.save().then(result => {
         console.log(`added ${result.name} number ${result.number} to phonebook`)
-        //mongoose.connection.close()
+        mongoose.connection.close()
     })    
 }
 
@@ -32,6 +34,6 @@ else if (process.argv.length === 3){
     User.find({}).then(result => {
         console.log("phonebook:")
         result.forEach(user => console.log(`${user.name} ${user.number}`))
-        //mongoose.connection.close()
+        mongoose.connection.close()
     })
 }
