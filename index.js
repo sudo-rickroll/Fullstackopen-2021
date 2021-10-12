@@ -1,3 +1,5 @@
+require('dotenv').config()
+const model = require("./models/users") 
 const morgan = require('morgan')
 const express = require('express')
 const cors = require('cors')
@@ -16,44 +18,43 @@ morgan.token('body', (request, response) => {
 })
 
 let persons = [
-    { 
-      id: 1,
-      name: "Arto Hellas", 
-      number: "040-123456"
-    },
-    { 
-      id: 2,
-      name: "Ada Lovelace", 
-      number: "39-44-5323523"
-    },
-    { 
-      id: 3,
-      name: "Dan Abramov", 
-      number: "12-43-234345"
-    },
-    { 
-      id: 4,
-      name: "Mary Poppendieck", 
-      number: "39-23-6423122"
-    }
+  { 
+    id: 1,
+    name: "Arto Hellas", 
+    number: "040-123456"
+  },
+  { 
+    id: 2,
+    name: "Ada Lovelace", 
+    number: "39-44-5323523"
+  },
+  { 
+    id: 3,
+    name: "Dan Abramov", 
+    number: "12-43-234345"
+  },
+  { 
+    id: 4,
+    name: "Mary Poppendieck", 
+    number: "39-23-6423122"
+  }
 ]
 
 app.get("/api/persons", (request, response) => {
-    response.send(persons)
+    model.find({}).then(persons => response.send(persons)).catch(error => response.send())
 })
 
 app.get("/info", (request, response) => {
-    response.send(`<p>Phonebook has info for ${persons.length} people</p>
-    <p>${new Date()}</p>`)
+  model.find({}).then(persons => response.send(response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`))).catch(error => response.send(error))    
 })
 
 app.get("/api/persons/:id", (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(item => item.id === id)
+  model.findById(request.params.id).then(person => {    
     if (person){
         return response.send(person)
     }
     return response.status(404).end()
+  }).catch(error => response.send(error))
 })
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -63,25 +64,17 @@ app.delete("/api/persons/:id", (request, response) => {
 })
 
 app.post("/api/persons", (request, response) => {
-  const person = request.body
-  if (!('name' in person ) || !('number' in person)){
+  const person = new model(request.body)
+  if (!(person.name) || !(person.number)){
     return response.status(404).send({
       error : "Please make sure that both the name and numbers are entered."
     })
   }
-  if (persons.find(item => item.name.toLowerCase().trim() === person.name.toLowerCase().trim())){
-    return response.status(403).send({
-      error:"Name already exists"
-    })
-  }
-  persons = persons.concat({
-    id : Math.floor(Math.random() * 1000000),
-    ...person
-  })
-  response.send(persons)
+  person.save().then(result => response.send(`<p>added ${result.name} successfully to phonebook`)).catch(error => response.send('Could not add', error))
+  
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Application started in port ${PORT}`)
 })
