@@ -16,4 +16,4 @@ phonebookSchema.set('toJSON', {transform : (sendingDocument, receivingDocument) 
     delete receivingDocument._id
 }})
 
-module.exports = mongoose.model(phonebookSchema)
+module.exports = mongoose.model('User',phonebookSchema)
