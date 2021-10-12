@@ -64,17 +64,14 @@ app.delete("/api/persons/:id", (request, response) => {
 })
 
 app.post("/api/persons", (request, response) => {
-  const person = request.body
-  if (!('name' in person ) || !('number' in person)){
+  const person = new model(request.body)
+  if (!(person.name) || !(person.number)){
     return response.status(404).send({
       error : "Please make sure that both the name and numbers are entered."
     })
   }
-  persons = persons.concat({
-    id : Math.floor(Math.random() * 1000000),
-    ...person
-  })
-  response.send(persons)
+  person.save().then(result => response.send(`<p>added ${result.name} successfully to phonebook`)).catch(error => response.send('Could not add', error))
+  
 })
 
 const PORT = process.env.PORT
