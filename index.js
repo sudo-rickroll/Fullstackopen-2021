@@ -57,15 +57,14 @@ app.get("/api/persons/:id", (request, response) => {
   }).catch(error => response.send(error))
 })
 
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   model.findByIdAndRemove(request.params.id).then(result => {
     if (result){
       return response.status(204).end()
     }
     response.status(404).end()
   }).catch(error => {
-    console.log(error)
-    response.send(500)
+    next(error)
   })
 })
 
@@ -80,7 +79,18 @@ app.post("/api/persons", (request, response) => {
   
 })
 
-
+app.use((error, request, response, next) => {
+  console.log(error)
+  if (error.name === "CastError"){
+    response.status(400).send({
+      error : "Malformatted ID"
+    })
+  }
+  else{
+    response.send(500).end()
+  }
+  next(error)
+})
 const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Application started in port ${PORT}`)
