@@ -79,6 +79,18 @@ app.post("/api/persons", (request, response) => {
   
 })
 
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body
+  const person = {
+    name : body.name,
+    number : body.number 
+  } 
+  model.findByIdAndUpdate(request.params.id, person, {new: true}).then(updatedPerson => {
+    response.status(204).send(updatedPerson)
+  }).
+    catch(error => next(error))
+})
+
 app.use((error, request, response, next) => {
   console.log(error)
   if (error.name === "CastError"){

@@ -17,3 +17,12 @@ Content-Type: application/json
       "name": "Rangasai K R", 
       "number": "84-2365-4242"
 }
+
+###
+PUT  http://localhost:3001/api/persons/616431826f98a24d74b0d128
+Content-Type: application/json
+
+{ 
+      "name": "Rangasai K R", 
+      "number": "84-2365-4242"
+}
