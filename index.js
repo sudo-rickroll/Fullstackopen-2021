@@ -17,12 +17,12 @@ morgan.token('body', (request, response) => {
   return " "
 })
 
-app.get("/api/persons", (request, response) => {
-    model.find({}).then(persons => response.send(persons)).catch(error => response.send())
+app.get("/api/persons", (request, response, next) => {
+    model.find({}).then(persons => response.send(persons)).catch(error => next(error))
 })
 
-app.get("/info", (request, response) => {
-  model.find({}).then(persons => response.send(response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`))).catch(error => response.send(error))    
+app.get("/info", (request, response, next) => {
+  model.find({}).then(persons => response.send(response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`))).catch(error => next(error))    
 })
 
 app.get("/api/persons/:id", (request, response) => {
@@ -68,6 +68,12 @@ app.put("/api/persons/:id", (request, response, next) => {
     catch(error => next(error))
 })
 
+// Unknown Endpoint Handler Middleware
+app.use((request, response) => response.status(404).send({
+  error : "Unknown Endpoint"
+}))
+
+// Error Handler Middleware
 app.use((error, request, response, next) => {
   console.log(error)
   if (error.name === "CastError"){
