@@ -1,4 +1,5 @@
 mongoose = require('mongoose')
+uniqueValidator = require('mongoose-unique-validator')
 require('dotenv').config()
 
 const url = process.env.MONGODB_URI
@@ -6,8 +7,15 @@ const url = process.env.MONGODB_URI
 mongoose.connect(url).then(result => console.log('Connected to database')).catch(error => console.log('Error connecting to database: ', error.message))
 
 const phonebookSchema = new mongoose.Schema({
-    name : String,
-    number : String
+    name : {
+        type : String,
+        required : true,
+        unique : true
+    },
+    number : {
+        type : String,
+        required : true
+    }
 })
 
 phonebookSchema.set('toJSON', {transform : (sendingDocument, receivingDocument) =>{
@@ -15,5 +23,7 @@ phonebookSchema.set('toJSON', {transform : (sendingDocument, receivingDocument) 
     delete receivingDocument.__v
     delete receivingDocument._id
 }})
+
+phonebookSchema.plugin(uniqueValidator)
 
 module.exports = mongoose.model('User',phonebookSchema)

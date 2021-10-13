@@ -45,14 +45,9 @@ app.delete("/api/persons/:id", (request, response, next) => {
   })
 })
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const person = new model(request.body)
-  if (!(person.name) || !(person.number)){
-    return response.status(404).send({
-      error : "Please make sure that both the name and numbers are entered."
-    })
-  }
-  person.save().then(result => response.send(`<p>added ${result.name} successfully to phonebook`)).catch(error => response.send('Could not add', error))
+  person.save().then(result => response.send(`<p>added ${result.name} successfully to phonebook`)).catch(error => next(error))
   
 })
 
@@ -80,6 +75,9 @@ app.use((error, request, response, next) => {
     response.status(400).send({
       error : "Malformatted ID"
     })
+  }
+  else if (error.name === "ValidationError"){
+    response.status(400).send(error.message)
   }
   else{
     response.send(500).end()
