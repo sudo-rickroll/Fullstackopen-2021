@@ -58,9 +58,15 @@ app.get("/api/persons/:id", (request, response) => {
 })
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(item => item.id !== id)
-  response.status(200).end()
+  model.findByIdAndRemove(request.params.id).then(result => {
+    if (result){
+      return response.status(204).end()
+    }
+    response.status(404).end()
+  }).catch(error => {
+    console.log(error)
+    response.send(500)
+  })
 })
 
 app.post("/api/persons", (request, response) => {
@@ -73,6 +79,7 @@ app.post("/api/persons", (request, response) => {
   person.save().then(result => response.send(`<p>added ${result.name} successfully to phonebook`)).catch(error => response.send('Could not add', error))
   
 })
+
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
