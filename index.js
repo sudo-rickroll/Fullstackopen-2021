@@ -1,40 +1,39 @@
 require('dotenv').config()
-const model = require("./models/users") 
+const model = require('./models/users')
 const morgan = require('morgan')
 const express = require('express')
 const cors = require('cors')
 const app = express()
-
 app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-morgan.token('body', (request, response) => {
+morgan.token('body', request => {
   if (request.method === 'POST'){
     return JSON.stringify(request.body)
   }
-  return " "
+  return ' '
 })
 
-app.get("/api/persons", (request, response, next) => {
-    model.find({}).then(persons => response.send(persons)).catch(error => next(error))
+app.get('/api/persons', (request, response, next) => {
+  model.find({}).then(persons => response.send(persons)).catch(error => next(error))
 })
 
-app.get("/info", (request, response, next) => {
-  model.find({}).then(persons => response.send(response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`))).catch(error => next(error))    
+app.get('/info', (request, response, next) => {
+  model.find({}).then(persons => response.send(response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`))).catch(error => next(error))
 })
 
-app.get("/api/persons/:id", (request, response) => {
-  model.findById(request.params.id).then(person => {    
+app.get('/api/persons/:id', (request, response) => {
+  model.findById(request.params.id).then(person => {
     if (person){
-        return response.send(person)
+      return response.send(person)
     }
     return response.status(404).end()
   }).catch(error => response.send(error))
 })
 
-app.delete("/api/persons/:id", (request, response, next) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   model.findByIdAndRemove(request.params.id).then(result => {
     if (result){
       return response.status(204).end()
@@ -45,19 +44,18 @@ app.delete("/api/persons/:id", (request, response, next) => {
   })
 })
 
-app.post("/api/persons", (request, response, next) => {
+app.post('/api/persons', (request, response, next) => {
   const person = new model(request.body)
   person.save().then(result => response.send(`<p>added ${result.name} successfully to phonebook`)).catch(error => next(error))
-  
 })
 
-app.put("/api/persons/:id", (request, response, next) => {
+app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
   const person = {
     name : body.name,
-    number : body.number 
-  } 
-  model.findByIdAndUpdate(request.params.id, person, {new: true}).then(updatedPerson => {
+    number : body.number
+  }
+  model.findByIdAndUpdate(request.params.id, person, { new: true }).then(updatedPerson => {
     response.status(204).send(updatedPerson)
   }).
     catch(error => next(error))
@@ -65,18 +63,18 @@ app.put("/api/persons/:id", (request, response, next) => {
 
 // Unknown Endpoint Handler Middleware
 app.use((request, response) => response.status(404).send({
-  error : "Unknown Endpoint"
+  error : 'Unknown Endpoint'
 }))
 
 // Error Handler Middleware
 app.use((error, request, response, next) => {
   console.log(error)
-  if (error.name === "CastError"){
+  if (error.name === 'CastError'){
     response.status(400).send({
-      error : "Malformatted ID"
+      error : 'Malformatted ID'
     })
   }
-  else if (error.name === "ValidationError"){
+  else if (error.name === 'ValidationError'){
     response.status(400).send(error.message)
   }
   else{
