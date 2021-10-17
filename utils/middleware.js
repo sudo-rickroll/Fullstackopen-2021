@@ -2,10 +2,9 @@ const morgan = require('morgan')
 const logger = require('./logger')
 const misc = require('./misc')
 
-const morganMiddleware = (request, response, next) => {
-  morgan(':method :url :status :res[content-length] - :response-time ms :body')
+const morganMiddleware = () => {
   misc.morganToken()
-  next()
+  return morgan(':method :url :status :res[content-length] - :response-time ms :body')
 }
 
 // Unknown Endpoint Handler Middleware

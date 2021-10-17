@@ -12,7 +12,7 @@ mongoose.connect(config.url).then(() => logger.log('Connected to database')).cat
 app.use(cors())
 app.use(express.static('./build'))
 app.use(express.json())
-app.use(middleware.morganMiddleware)
+app.use(middleware.morganMiddleware())
 app.use('/api/persons', routers, middleware.unknownHandlerMiddleware, middleware.errorHandlerMiddleware)
 
 module.exports = app
