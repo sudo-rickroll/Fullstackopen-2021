@@ -26,4 +26,4 @@ To run the application in development mode using nodemon to refresh the server a
 
 ## Miscellaneous -
 1. Additional Dependancies - morgan, dotenv, cors, mongoose, mongoose-unique-validator
-2. Additional Dev Dependancies - eslint, nodemon
+2. Additional Development Dependancies - eslint, nodemon
