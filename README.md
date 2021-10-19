@@ -25,5 +25,5 @@ If configuring as a git repo, make sure to add the `node_modules` folder and the
 To run the application in development mode using nodemon to refresh the server after every code change, run the command `npm run dev`. To run the application in production mode, use `npm start`.
 
 ## Miscellaneous -
-1. Additional Dependancies - morgan, dotenv, cors, mongoose, mongoose-unique-validator
-2. Additional Development Dependancies - eslint, nodemon
+1. Additional Dependancies used - morgan, dotenv, cors, mongoose, mongoose-unique-validator
+2. Additional Development Dependancies used - eslint, nodemon
